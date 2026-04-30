@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import random
 import time
 
@@ -594,30 +595,75 @@ else:
         # ── Resolución paso a paso ──
         st.markdown("<br>", unsafe_allow_html=True)
 
-        pasos_html = ""
+        pasos_items = ""
         for n, (desc, expr) in enumerate(p["pasos"], 1):
-            pasos_html += f"""
-            <div class="paso">
-              <div class="paso-num">{n}</div>
-              <div class="paso-texto">
-                <span style="color:#64748b; font-size:0.8rem;">{desc}</span><br>
-                <code style="color:#e2e8f0; background:transparent; font-size:0.95rem;">{expr}</code>
+            pasos_items += f"""
+            <div style="display:flex; gap:12px; align-items:flex-start; margin:10px 0;">
+              <div style="background:#1e293b; border:1px solid #38bdf844; color:#38bdf8;
+                          border-radius:50%; width:24px; height:24px; min-width:24px;
+                          display:flex; align-items:center; justify-content:center;
+                          font-size:0.7rem; font-weight:700; margin-top:2px;">{n}</div>
+              <div>
+                <div style="color:#64748b; font-size:0.78rem; margin-bottom:2px;">{desc}</div>
+                <div style="color:#e2e8f0; font-family:'Space Mono',monospace;
+                            font-size:0.93rem; background:#0f172a; padding:4px 10px;
+                            border-radius:6px; display:inline-block;">{expr}</div>
               </div>
-            </div>
-            """
+            </div>"""
 
-        st.markdown(f"""
-        <div class="resolucion">
-          <h4>📋 Resolución paso a paso</h4>
-          {pasos_html}
-          <div class="resultado-final">
-            ➜ &nbsp; {p["resultado"]}
+        altura_estimada = 120 + len(p["pasos"]) * 68
+
+        components.html(f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
+          <style>
+            body {{ margin:0; padding:0; background:transparent; }}
+            .resolucion {{
+              background: #0f172a;
+              border: 1px solid #1e40af55;
+              border-left: 4px solid #818cf8;
+              border-radius: 10px;
+              padding: 20px 24px;
+              font-family: 'DM Sans', sans-serif;
+            }}
+            .res-titulo {{
+              color: #818cf8;
+              font-size: 0.75rem;
+              letter-spacing: 3px;
+              text-transform: uppercase;
+              margin: 0 0 14px 0;
+              font-weight: 700;
+            }}
+            .resultado-final {{
+              background: #1e293b;
+              border-radius: 8px;
+              padding: 10px 16px;
+              margin-top: 14px;
+              color: #38bdf8;
+              font-weight: 700;
+              font-size: 1rem;
+              font-family: 'Space Mono', monospace;
+            }}
+            .verificacion {{
+              margin-top: 10px;
+              color: #475569;
+              font-size: 0.78rem;
+              font-family: 'Space Mono', monospace;
+            }}
+          </style>
+        </head>
+        <body>
+          <div class="resolucion">
+            <div class="res-titulo">📋 Resolución paso a paso</div>
+            {pasos_items}
+            <div class="resultado-final">➜ &nbsp; {p["resultado"]}</div>
+            <div class="verificacion">{p["verificacion"]}</div>
           </div>
-          <div style="margin-top:10px; color:#475569; font-size:0.8rem;">
-            {p["verificacion"]}
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
+        </body>
+        </html>
+        """, height=altura_estimada, scrolling=False)
 
         # ── Botón siguiente ──
         st.markdown("<br>", unsafe_allow_html=True)
